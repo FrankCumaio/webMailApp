@@ -1,0 +1,112 @@
+﻿@model IEnumerable<webMailApp.Models.email>
+@using Microsoft.AspNet.Identity
+@using webMailApp.Models;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Inbox:@Model.Count()</h2>
+
+<p>
+    
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Escrever</button>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Novo email</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="emailform" method="post" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Endereco</label>
+                            <div class="col-md-10 endereco" >
+                                <input value="1" class="form-control" id="endereco" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Assunto</label>
+                            <div class="col-md-10">
+                                <input class="form-control" id="assunto" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Mensagem</label>
+                            <div class="col-md-10">
+                                <textarea class="form-control" rows="5" id="corpo"></textarea>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" value="@User.Identity.GetUserId()" class="btn btn-default enviar" data-dismiss="modal" id="enviar">Enviar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Remetente
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.assunto)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.assunto)
+        </td>
+        <td>
+            @Html.ActionLink("Ver", "Details", new { id=item.Id }) | 
+            <button type="button" value=" @Html.DisplayFor(modelItem => item.ApplicationUser.Email)"  class="btn btn-info btn-lg responder" data-toggle="modal" data-target="#myModal">Responder</button>
+
+        </td>
+    </tr>
+}
+
+</table>
+<script>
+    $('.enviar').click(function (event) {
+        var d = $("#endereco").val();
+        alert("Email enviado para:"+d);
+        var idUser = $(".enviar").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "Email")',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ "endereco": $("#endereco").val(), "assunto": $("#assunto").val(), "corpo": $("#corpo").val(), "ApplicationUserID": idUser }),
+            dataType: 'json',
+            success: function (response) {
+                location.reload();
+            }
+        });
+    });
+
+    $('.responder').click(function (event) {
+        var d = $(this).val();
+        alert("Respondendo:" + d);
+        var idUser = $(".enviar").val();
+        $('.endereco').html('<input value="' + d + '" class="form-control" id="endereco" />')
+
+           // then reload the page.(3)
+            
+    });
+</script>

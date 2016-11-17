@@ -1,0 +1,42 @@
+﻿@model webMailApp.Models.email
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>email</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.assunto)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.assunto)
+        </dd>
+
+        <dt>
+            Mensagem
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.corpo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Responder", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
